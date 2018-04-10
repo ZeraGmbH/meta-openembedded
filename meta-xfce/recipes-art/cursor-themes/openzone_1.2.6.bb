@@ -2,18 +2,15 @@ SUMMARY = "X11 Mouse Theme"
 HOMEPAGE = "http://xfce-look.org/content/show.php/OpenZone?content=111343"
 SECTION = "x11/wm"
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://COPYING;md5=a2f562fb8fb1e138b810d69521c4bcd7"
+LIC_FILES_CHKSUM = "file://COPYING;md5=15c85787ab411af36a78dfc20fdf7793"
 
-inherit allarch gtk-icon-cache
+inherit allarch pixbufcache
 
-SRC_URI = "http://xfce-look.org/CONTENT/content-files/111343-OpenZone-${PV}.tar.xz"
-SRC_URI[md5sum] = "4dae968cbd525072664ef7a4fc7c4154"
-SRC_URI[sha256sum] = "dc20f97a49e1ff1becf7853ef5f137ed30a4c27490540e755021d78d339efd92"
+DEPENDS = "icon-slicer-native libpng-native gdk-pixbuf-native"
 
-S = "${WORKDIR}/OpenZone"
-
-do_compile() {
-}
+SRC_URI = "git://github.com/ducakar/openzone-cursors.git"
+SRCREV = "fc18e146a6c7ca7b6edb9df0b81ea1ddb22113c2"
+S = "${WORKDIR}/git"
 
 do_install() {
     install -d ${D}${datadir}/icons
