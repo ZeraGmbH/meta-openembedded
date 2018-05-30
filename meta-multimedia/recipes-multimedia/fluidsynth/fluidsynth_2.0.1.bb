@@ -6,16 +6,15 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=fc178bcd425090939a8b634d1d6a9594"
 
 DEPENDS = "alsa-lib ncurses glib-2.0"
 
-SRC_URI = " \
-    git://github.com/FluidSynth/fluidsynth.git;branch=1.1.x \
-    file://0001-Use-ARM-NEON-accelaration-for-float-multithreaded-se.patch \
-"
-SRCREV = "f65c6ba25fb2c7e37c89fc6a4afc5aa645e208c2"
+SRC_URI = "git://github.com/FluidSynth/fluidsynth.git"
+SRCREV = "0f11c9a0da874ab1ac37e192a42d6361b940a232"
 S = "${WORKDIR}/git"
 
 inherit cmake pkgconfig lib_package
 
 EXTRA_OECMAKE = "-Denable-floats=ON -DLIB_SUFFIX=${@d.getVar('baselib').replace('lib', '')}"
+
+CFLAGS += "-fopenmp"
 
 PACKAGECONFIG ??= "${@bb.utils.filter('DISTRO_FEATURES', 'pulseaudio', d)}"
 PACKAGECONFIG[sndfile] = "-Denable-libsndfile-support=ON,-Denable-libsndfile-support=OFF,libsndfile1"
