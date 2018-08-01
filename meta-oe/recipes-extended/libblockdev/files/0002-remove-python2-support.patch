@@ -9,22 +9,22 @@ Upstream-Status: Inappropriate [wr-installer specific]
 
 Signed-off-by: Hongxu Jia <hongxu.jia@windriver.com>
 ---
- src/python/gi/overrides/Makefile.am | 5 -----
- 1 file changed, 5 deletions(-)
+ src/python/gi/overrides/Makefile.am | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/src/python/gi/overrides/Makefile.am b/src/python/gi/overrides/Makefile.am
-index a2927ac..6385502 100644
+index be3307c..f8db75e 100644
 --- a/src/python/gi/overrides/Makefile.am
 +++ b/src/python/gi/overrides/Makefile.am
-@@ -1,8 +1,3 @@
+@@ -1,8 +1,4 @@
+ if WITH_PYTHON2
 -pylibdir = $(shell python -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(1,0,prefix='${exec_prefix}'))")
 -
 -overridesdir = $(pylibdir)/gi/overrides
 -dist_overrides_DATA = BlockDev.py
--
+ endif
+ 
  if WITH_PYTHON3
- py3libdir = $(shell python3 -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(1,0,prefix='${exec_prefix}'))")
- py3overridesdir = $(py3libdir)/gi/overrides
 -- 
-1.8.3.1
+2.14.4
 

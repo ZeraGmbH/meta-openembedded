@@ -2,7 +2,7 @@ DESCRIPTION = "libblockdev is a C library supporting GObject introspection for m
 block devices. It has a plugin-based architecture where each technology (like \
 LVM, Btrfs, MD RAID, Swap,...) is implemented in a separate plugin, possibly \
 with multiple implementations (e.g. using LVM CLI or the new LVM DBus API)."
-HOMEPAGE = "http://rhinstaller.github.io/libblockdev/"
+HOMEPAGE = "http://storaged.org/libblockdev/"
 LICENSE = "LGPLv2+"
 SECTION = "devel/lib"
 
@@ -18,19 +18,20 @@ DEPENDS += " \
     btrfs-tools \
 "
 
-SRCREV = "e2e0899efe8dd3f111ff955fb6c1dc10b0bd2075"
+SRCREV = "0debeb45562ac3d8f6f43f6f942b238abab55be9"
 SRC_URI = " \
     git://github.com/rhinstaller/libblockdev;branch=master \
     file://0001-fix-configure-and-compile-failures.patch \
-    file://0002-remove-python2-support.patch \
-    file://0003-remove-dmraid-while-compiling-with-with-dm.patch \
-    file://0005-fix-a-clang-compiling-issue.patch \
 "
 SRC_URI_append_libc-musl = " \
     file://0004-fix-compile-failure-against-musl-C-library.patch \
 "
 
 S = "${WORKDIR}/git"
+
+EXTRA_OECONF += " \
+    --without-python2 \
+"
 
 RDEPENDS_${PN} += " \
     lvm2 \

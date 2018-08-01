@@ -29,11 +29,11 @@ Upstream-Status: Inappropriate [oe specific]
 
 Signed-off-by: Hongxu Jia <hongxu.jia@windriver.com>
 ---
- configure.ac | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ configure.ac | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index d41a307..b036e04 100644
+index a37f337..e9a4964 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -9,6 +9,8 @@ AC_DISABLE_STATIC
@@ -45,26 +45,28 @@ index d41a307..b036e04 100644
  AM_PATH_PYTHON
  
  AM_PROG_AR
-@@ -154,7 +156,6 @@ LIBBLOCKDEV_PKG_CHECK_MODULES([KMOD], [libkmod >= 19])
+@@ -194,7 +196,8 @@ LIBBLOCKDEV_PKG_CHECK_MODULES([KMOD], [libkmod >= 19])
  AS_IF([test "x$with_crypto" != "xno"],
        [LIBBLOCKDEV_PKG_CHECK_MODULES([CRYPTSETUP], [libcryptsetup >= 1.6.7])
-        LIBBLOCKDEV_PKG_CHECK_MODULES([NSS], [nss >= 3.18.0])
--       LIBBLOCKDEV_CHECK_HEADER([volume_key/libvolume_key.h], [$GLIB_CFLAGS $NSS_CFLAGS], [libvolume_key.h not available])
-       ],
-       [])
- 
-@@ -162,10 +163,6 @@ AS_IF([test "x$with_dm" != "xno" -o "x$with_lvm" != "xno" -o "x$with_lvm_dbus" !
+       AS_IF([$PKG_CONFIG --atleast-version=2.0 libcryptsetup],
+-            [AC_DEFINE([LIBCRYPTSETUP_2])], [])
++            [AC_DEFINE([LIBCRYPTSETUP_2])], [1], [Version libcryptsetup >= 2],
++            [])
+       AS_IF([test "x$with_escrow" != "xno"],
+             [LIBBLOCKDEV_PKG_CHECK_MODULES([NSS], [nss >= 3.18.0])
+              LIBBLOCKDEV_CHECK_HEADER([volume_key/libvolume_key.h], [$GLIB_CFLAGS $NSS_CFLAGS], [libvolume_key.h not available])],
+@@ -206,10 +209,6 @@ AS_IF([test "x$with_dm" != "xno" -o "x$with_lvm" != "xno" -o "x$with_lvm_dbus" !
        [LIBBLOCKDEV_PKG_CHECK_MODULES([DEVMAPPER], [devmapper >= 1.02.93])],
        [])
  
--AS_IF([test "x$with_dm" != "xno"],
+-AS_IF([test "x$with_dm" != "xno" -a "x$with_dmraid" != "xno"],
 -      [LIBBLOCKDEV_CHECK_HEADER([dmraid/dmraid.h], [], [dmraid.h not available])],
 -      [])
 -
  AS_IF([test "x$with_part" != "xno" -o "x$with_fs" != "xno"],
        [LIBBLOCKDEV_PKG_CHECK_MODULES([PARTED], [libparted >= 3.1])]
        [])
-@@ -174,7 +171,8 @@ AS_IF([test "x$with_fs" != "xno"],
+@@ -218,7 +217,8 @@ AS_IF([test "x$with_fs" != "xno"],
        [LIBBLOCKDEV_PKG_CHECK_MODULES([MOUNT], [mount >= 2.23.0])
         # new versions of libmount has some new functions we can use
         AS_IF([$PKG_CONFIG --atleast-version=2.30.0 mount],
@@ -74,6 +76,15 @@ index d41a307..b036e04 100644
  
         LIBBLOCKDEV_PKG_CHECK_MODULES([BLKID], [blkid >= 2.23.0])
         # older versions of libblkid don't support BLKID_SUBLKS_BADCSUM so let's just
+@@ -243,7 +243,7 @@ AS_IF([test "x$with_nvdimm" != "xno"],
+        LIBBLOCKDEV_PKG_CHECK_MODULES([NDCTL], [libndctl >= 58.4])
+        # new versions of libndctl new modes
+        AS_IF([$PKG_CONFIG --atleast-version=60 libndctl],
+-             [AC_DEFINE([LIBNDCTL_NEW_MODES])], [])]
++             [AC_DEFINE([LIBNDCTL_NEW_MODES])], [libndctl >= version 60])]
+       [])
+ 
+ AS_IF([test "x$with_vdo" != "xno"],
 -- 
-2.14.3
+2.14.4
 
