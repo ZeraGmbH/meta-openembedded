@@ -31,7 +31,7 @@ do_install_append() {
         install -d ${D}${bindir}
         install -m 0755 ${WORKDIR}/xinput_calibrator_pointercal2.sh ${D}${bindir}/xinput_calibrator_pointercal2.sh
         install -d ${D}/${sysconfdir}/X11/xorg.conf.d
-        install -m 0644 ${WORKDIR}/99-ADS7846_Touchscreen_.conf ${D}/${sysconfdir}/X11/xorg.conf.d
+        install -m 0666 ${WORKDIR}/99-ADS7846_Touchscreen_.conf ${D}/${sysconfdir}/X11/xorg.conf.d
         sed -i 's,xinput_calibrator;,xinput_calibrator_pointercal2.sh;,g' \
 		${D}${datadir}/applications/xinput_calibrator.desktop
 }
@@ -39,7 +39,7 @@ do_install_append() {
 RRECOMMENDS_${PN} = "pointercal-xinput"
 
 pkg_postinst_${PN} () {
-    for calfile in `find /etc/X11/xorg.conf.d -name '99-*.conf'` ; do
+    for calfile in `find $D/etc/X11/xorg.conf.d -name '99-*.conf'` ; do
         chmod 666 $calfile
     done
 }
