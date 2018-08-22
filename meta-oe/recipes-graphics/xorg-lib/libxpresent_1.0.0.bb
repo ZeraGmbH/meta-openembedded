@@ -1,6 +1,6 @@
 require recipes-graphics/xorg-lib/xorg-lib-common.inc
 SUMMARY = "X Athena Widget Set"
-DEPENDS += "xorgproto libxfixes libxrandr"
+DEPENDS += "presentproto libxfixes libxrandr"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=3c1ce42c334a6f5cccb0277556a053e0"
 
