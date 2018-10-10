@@ -1,0 +1,342 @@
+From 6aba233fafc8502aec16c2db38326fa650b2596a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Andreas=20M=C3=BCller?= <schnitzeltony@gmail.com>
+Date: Wed, 10 Oct 2018 16:15:19 +0200
+Subject: [PATCH] systray: remove all quirks
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Andreas Müller <schnitzeltony@gmail.com>
+---
+ plugins/systray/systray-socket.c | 177 +--------------------------------------
+ plugins/systray/systray.c        |  73 ----------------
+ 2 files changed, 2 insertions(+), 248 deletions(-)
+
+diff --git a/plugins/systray/systray-socket.c b/plugins/systray/systray-socket.c
+index 61887742..0f89c192 100644
+--- a/plugins/systray/systray-socket.c
++++ b/plugins/systray/systray-socket.c
+@@ -57,8 +57,6 @@ struct _SystraySocket
+ 
+   gchar           *name;
+ 
+-  guint            is_composited : 1;
+-  guint            parent_relative_bg : 1;
+   guint            hidden : 1;
+ };
+ 
+@@ -66,12 +64,6 @@ struct _SystraySocket
+ 
+ static void     systray_socket_finalize      (GObject        *object);
+ static void     systray_socket_realize       (GtkWidget      *widget);
+-static void     systray_socket_size_allocate (GtkWidget      *widget,
+-                                              GtkAllocation  *allocation);
+-static gboolean systray_socket_draw          (GtkWidget      *widget,
+-                                              cairo_t        *cr);
+-static void     systray_socket_style_set     (GtkWidget      *widget,
+-                                              GtkStyle       *previous_style);
+ 
+ 
+ 
+@@ -90,9 +82,6 @@ systray_socket_class_init (SystraySocketClass *klass)
+ 
+   gtkwidget_class = GTK_WIDGET_CLASS (klass);
+   gtkwidget_class->realize = systray_socket_realize;
+-  gtkwidget_class->size_allocate = systray_socket_size_allocate;
+-  gtkwidget_class->draw = systray_socket_draw;
+-  gtkwidget_class->style_set = systray_socket_style_set;
+ }
+ 
+ 
+@@ -122,116 +111,12 @@ static void
+ systray_socket_realize (GtkWidget *widget)
+ {
+   SystraySocket *socket = XFCE_SYSTRAY_SOCKET (widget);
+-  GdkRGBA        transparent = { 0.0, 0.0, 0.0, 0.0 };
+-  GdkWindow     *window;
+ 
+   GTK_WIDGET_CLASS (systray_socket_parent_class)->realize (widget);
+ 
+-  window = gtk_widget_get_window (widget);
+-
+-  if (socket->is_composited)
+-    {
+-      gdk_window_set_background_rgba (window, &transparent);
+-      gdk_window_set_composited (window, TRUE);
+-
+-      socket->parent_relative_bg = FALSE;
+-    }
+-  else if (gtk_widget_get_visual (widget) ==
+-           gdk_window_get_visual (gdk_window_get_parent (window)))
+-    {
+-      gdk_window_set_background_pattern (window, NULL);
+-
+-      socket->parent_relative_bg = TRUE;
+-    }
+-  else
+-    {
+-      socket->parent_relative_bg = FALSE;
+-    }
+-
+-  gdk_window_set_composited (window, socket->is_composited);
+-
+-  gtk_widget_set_app_paintable (widget,
+-      socket->parent_relative_bg || socket->is_composited);
+-
+-  gtk_widget_set_double_buffered (widget, socket->parent_relative_bg);
+-
+   panel_debug_filtered (PANEL_DEBUG_SYSTRAY,
+-      "socket %s[%p] (composited=%s, relative-bg=%s",
+-      systray_socket_get_name (socket), socket,
+-      PANEL_DEBUG_BOOL (socket->is_composited),
+-      PANEL_DEBUG_BOOL (socket->parent_relative_bg));
+-}
+-
+-
+-
+-static void
+-systray_socket_size_allocate (GtkWidget     *widget,
+-                              GtkAllocation *allocation)
+-{
+-  SystraySocket *socket = XFCE_SYSTRAY_SOCKET (widget);
+-  GtkAllocation  widget_allocation;
+-  gboolean       moved;
+-  gboolean       resized;
+-
+-  gtk_widget_get_allocation (widget, &widget_allocation);
+-  moved = allocation->x != widget_allocation.x
+-       || allocation->y != widget_allocation.y;
+-  resized = allocation->width != widget_allocation.width
+-          ||allocation->height != widget_allocation.height;
+-
+-  if ((moved || resized)
+-      && gtk_widget_get_mapped (widget))
+-    {
+-      if (socket->is_composited)
+-        gdk_window_invalidate_rect (gdk_window_get_parent (gtk_widget_get_window (widget)),
+-                                    &widget_allocation, FALSE);
+-    }
+-
+-  GTK_WIDGET_CLASS (systray_socket_parent_class)->size_allocate (widget, allocation);
+-
+-  if ((moved || resized)
+-      && gtk_widget_get_mapped (widget))
+-    {
+-      if (socket->is_composited)
+-        gdk_window_invalidate_rect (gdk_window_get_parent (gtk_widget_get_window (widget)),
+-                                    &widget_allocation, FALSE);
+-      else if (moved && socket->parent_relative_bg)
+-        systray_socket_force_redraw (socket);
+-    }
+-}
+-
+-
+-
+-static gboolean
+-systray_socket_draw (GtkWidget *widget,
+-                     cairo_t   *cr)
+-{
+-  SystraySocket *socket = XFCE_SYSTRAY_SOCKET (widget);
+-
+-  if (socket->is_composited)
+-    {
+-      /* clear to transparent */
+-      cairo_set_source_rgba (cr, 0, 0, 0, 0);
+-      cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+-      cairo_fill (cr);
+-    }
+-  else if (socket->parent_relative_bg)
+-    {
+-      /* clear to parent-relative pixmap */
+-      cairo_set_source_rgb (cr, 0, 0, 0);
+-      cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+-      cairo_fill (cr);
+-    }
+-
+-  return FALSE;
+-}
+-
+-
+-
+-static void
+-systray_socket_style_set (GtkWidget *widget,
+-                          GtkStyle  *previous_style)
+-{
++      "socket %s[%p]",
++      systray_socket_get_name (socket), socket);
+ }
+ 
+ 
+@@ -268,71 +153,13 @@ systray_socket_new (GdkScreen       *screen,
+   /* create a new socket */
+   socket = g_object_new (XFCE_TYPE_SYSTRAY_SOCKET, NULL);
+   socket->window = window;
+-  socket->is_composited = FALSE;
+   gtk_widget_set_visual (GTK_WIDGET (socket), visual);
+ 
+-  /* check if there is an alpha channel in the visual */
+-  gdk_visual_get_red_pixel_details (visual, NULL, NULL, &red_prec);
+-  gdk_visual_get_green_pixel_details (visual, NULL, NULL, &green_prec);
+-  gdk_visual_get_blue_pixel_details (visual, NULL, NULL, &blue_prec);
+-  if (red_prec + blue_prec + green_prec < gdk_visual_get_depth (visual)
+-      && gdk_display_supports_composite (gdk_screen_get_display (screen)))
+-    socket->is_composited = TRUE;
+-
+   return GTK_WIDGET (socket);
+ }
+ 
+ 
+ 
+-void
+-systray_socket_force_redraw (SystraySocket *socket)
+-{
+-  GtkWidget     *widget = GTK_WIDGET (socket);
+-  XEvent         xev;
+-  GdkDisplay    *display;
+-  GtkAllocation  allocation;
+-
+-  panel_return_if_fail (XFCE_IS_SYSTRAY_SOCKET (socket));
+-
+-  if (gtk_widget_get_mapped (widget) && socket->parent_relative_bg)
+-    {
+-      display = gtk_widget_get_display (widget);
+-
+-      gtk_widget_get_allocation (widget, &allocation);
+-
+-      xev.xexpose.type = Expose;
+-      xev.xexpose.window = GDK_WINDOW_XID (gtk_socket_get_plug_window (GTK_SOCKET (socket)));
+-      xev.xexpose.x = 0;
+-      xev.xexpose.y = 0;
+-      xev.xexpose.width = allocation.width;
+-      xev.xexpose.height = allocation.height;
+-      xev.xexpose.count = 0;
+-
+-      gdk_error_trap_push ();
+-      XSendEvent (GDK_DISPLAY_XDISPLAY (display),
+-                  xev.xexpose.window,
+-                  False, ExposureMask,
+-                  &xev);
+-      /* We have to sync to reliably catch errors from the XSendEvent(),
+-       * since that is asynchronous.
+-       */
+-      XSync (GDK_DISPLAY_XDISPLAY (display), False);
+-      gdk_error_trap_pop_ignored ();
+-    }
+-}
+-
+-
+-
+-gboolean
+-systray_socket_is_composited (SystraySocket *socket)
+-{
+-  panel_return_val_if_fail (XFCE_IS_SYSTRAY_SOCKET (socket), FALSE);
+-
+-  return socket->is_composited;
+-}
+-
+-
+-
+ static gchar *
+ systray_socket_get_name_prop (SystraySocket *socket,
+                               const gchar   *prop_name,
+diff --git a/plugins/systray/systray.c b/plugins/systray/systray.c
+index 9e34c739..df0d8317 100644
+--- a/plugins/systray/systray.c
++++ b/plugins/systray/systray.c
+@@ -54,9 +54,6 @@ static void     systray_plugin_orientation_changed          (XfcePanelPlugin
+ static gboolean systray_plugin_size_changed                 (XfcePanelPlugin       *panel_plugin,
+                                                              gint                   size);
+ static void     systray_plugin_configure_plugin             (XfcePanelPlugin       *panel_plugin);
+-static void     systray_plugin_box_draw                     (GtkWidget             *box,
+-                                                             cairo_t               *cr,
+-                                                             gpointer               user_data);
+ static void     systray_plugin_button_toggled               (GtkWidget             *button,
+                                                              SystrayPlugin         *plugin);
+ static void     systray_plugin_button_set_arrow             (SystrayPlugin         *plugin);
+@@ -248,8 +245,6 @@ systray_plugin_init (SystrayPlugin *plugin)
+ 
+   plugin->box = systray_box_new ();
+   gtk_box_pack_start (GTK_BOX (plugin->hvbox), plugin->box, TRUE, TRUE, 0);
+-  g_signal_connect (G_OBJECT (plugin->box), "draw",
+-      G_CALLBACK (systray_plugin_box_draw), plugin);
+   gtk_container_set_border_width (GTK_CONTAINER (plugin->box), FRAME_SPACING);
+   gtk_widget_show (plugin->box);
+ 
+@@ -698,74 +693,6 @@ systray_plugin_configure_plugin (XfcePanelPlugin *panel_plugin)
+ 
+ 
+ 
+-static void
+-systray_plugin_box_draw_icon (GtkWidget *child,
+-                              gpointer   user_data)
+-{
+-  cairo_t       *cr = user_data;
+-  GtkAllocation  alloc;
+-
+-  if (systray_socket_is_composited (XFCE_SYSTRAY_SOCKET (child)))
+-    {
+-      gtk_widget_get_allocation (child, &alloc);
+-
+-      /* skip hidden (see offscreen in box widget) icons */
+-      if (alloc.x > -1 && alloc.y > -1)
+-        {
+-          // FIXME
+-          gdk_cairo_set_source_window (cr, gtk_widget_get_window (child),
+-                                       alloc.x, alloc.y);
+-          cairo_paint (cr);
+-        }
+-    }
+-}
+-
+-
+-#if GTK_CHECK_VERSION (3, 22, 0)
+-static void
+-systray_plugin_box_draw (GtkWidget *box,
+-                         cairo_t   *cr,
+-                         gpointer   user_data)
+-{
+-  SystrayPlugin *plugin = XFCE_SYSTRAY_PLUGIN (user_data);
+-  GdkScreen      *screen;
+-
+-  panel_return_if_fail (XFCE_IS_SYSTRAY_PLUGIN (plugin));
+-  panel_return_if_fail (cr != NULL);
+-
+-  screen = gtk_widget_get_screen (GTK_WIDGET (plugin));
+-
+-  if (G_LIKELY (screen != NULL))
+-    {
+-      if (!gdk_screen_is_composited (screen))
+-        return;
+-    }
+-
+-  /* separately draw all the composed tray icons after gtk
+-   * handled the draw event */
+-  gtk_container_foreach (GTK_CONTAINER (box),
+-                         (GtkCallback) systray_plugin_box_draw_icon, cr);
+-}
+-#else
+-static void
+-systray_plugin_box_draw (GtkWidget *box,
+-                         cairo_t   *cr,
+-                         gpointer   user_data)
+-{
+-  panel_return_if_fail (cr != NULL);
+-
+-  if (!gtk_widget_is_composited (box))
+-    return;
+-
+-  /* separately draw all the composed tray icons after gtk
+-   * handled the draw event */
+-  gtk_container_foreach (GTK_CONTAINER (box),
+-                         (GtkCallback) systray_plugin_box_draw_icon, cr);
+-}
+-#endif
+-
+-
+-
+ static void
+ systray_plugin_button_toggled (GtkWidget     *button,
+                                SystrayPlugin *plugin)
+-- 
+2.14.4
+
