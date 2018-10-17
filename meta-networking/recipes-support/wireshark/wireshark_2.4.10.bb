@@ -11,8 +11,8 @@ SRC_URI += "file://libgcrypt.patch"
 
 UPSTREAM_CHECK_URI = "https://1.as.dl.wireshark.org/src"
 
-SRC_URI[md5sum] = "25f93aa6a2b3fdd9d1f01a49f84d224f"
-SRC_URI[sha256sum] = "db8ed7828c157e4ffb91fb8c41fa5a2f37fd44259175951a5c37848bf641f5e8"
+SRC_URI[md5sum] = "e6fb7f9896daeeb7be04f0fdad4b6db0"
+SRC_URI[sha256sum] = "d111d534baab687cf9d22d9aedbeb279214d58f9f38c496780697b626072882b"
 
 PE = "1"
 
