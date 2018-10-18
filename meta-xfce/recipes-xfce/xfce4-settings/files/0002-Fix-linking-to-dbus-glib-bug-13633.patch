@@ -18,7 +18,7 @@ diff --git a/xfce4-settings-editor/Makefile.am b/xfce4-settings-editor/Makefile.
 index 5964366..c2c7c4b 100644
 --- a/xfce4-settings-editor/Makefile.am
 +++ b/xfce4-settings-editor/Makefile.am
-@@ -27,6 +27,7 @@ xfce4_settings_editor_CFLAGS = \
+@@ -28,6 +28,7 @@ xfce4_settings_editor_CFLAGS = \
  	$(LIBXFCE4UTIL_CFLAGS) \
  	$(LIBXFCE4UI_CFLAGS) \
  	$(XFCONF_CFLAGS) \
@@ -26,8 +26,8 @@ index 5964366..c2c7c4b 100644
  	$(PLATFORM_CFLAGS)
  
  xfce4_settings_editor_LDFLAGS = \
-@@ -37,7 +38,8 @@ xfce4_settings_editor_LDADD = \
- 	$(GTK_LIBS) \
+@@ -39,7 +40,8 @@ xfce4_settings_editor_LDADD = \
+ 	$(DBUS_GLIB_LIBS) \
  	$(LIBXFCE4UTIL_LIBS) \
  	$(LIBXFCE4UI_LIBS) \
 -	$(XFCONF_LIBS)
