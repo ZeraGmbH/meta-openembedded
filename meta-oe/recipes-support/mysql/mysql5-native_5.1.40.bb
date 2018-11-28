@@ -3,13 +3,16 @@ inherit native
 PR ="r3"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-5.1/mysql-${PV}.tar.gz \
-           file://fix-abi-check-gcc45.patch"
+           file://fix-abi-check-gcc45.patch \
+           file://0001-Fix-build-with-recent-gcc.patch \
+"
 
 RDEPENDS_${PN} = ""
 PACKAGES = ""
 DEPENDS = "ncurses-native"
 EXTRA_OEMAKE = ""
 EXTRA_OECONF = " --with-embedded-server "
+CXXFLAGS += "-Wno-narrowing"
 
 do_install() {
         oe_runmake 'DESTDIR=${D}' install
