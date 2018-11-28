@@ -8,6 +8,7 @@ SRC_URI = " \
 	file://lxdm-pam \
 	file://lxdm-pam-debug \
 	${@base_contains("DISTRO_TYPE", "debug", "", "file://0001-lxdm.conf.in-blacklist-root-for-release-images.patch",d)} \
+    file://0002-configure.ac-Backport-automake-changes-to-fix-build.patch \
 "
 
 LXDM_PAM = "${@base_contains("DISTRO_TYPE", "debug", "lxdm-pam-debug", "lxdm-pam",d)}"

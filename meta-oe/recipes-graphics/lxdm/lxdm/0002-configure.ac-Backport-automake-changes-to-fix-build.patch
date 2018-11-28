@@ -1,0 +1,29 @@
+From 005231c22124a652466ab571da1500721b1724df Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Andreas=20M=C3=BCller?= <schnitzeltony@gmail.com>
+Date: Wed, 28 Nov 2018 18:23:39 +0100
+Subject: [PATCH] configure.ac: Backport automake changes to fix build
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Andreas Müller <schnitzeltony@gmail.com>
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 9e21a22..73bda5f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -3,7 +3,7 @@
+ 
+ AC_PREREQ([2.63])
+ AC_INIT([lxdm], [0.4.2], [http://lxde.org/])
+-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
++AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects no-dist-gzip dist-xz])
+ 
+ AC_CONFIG_SRCDIR([src/lxdm.c])
+ AC_CONFIG_HEADERS([config.h])
+-- 
+2.14.5
+
