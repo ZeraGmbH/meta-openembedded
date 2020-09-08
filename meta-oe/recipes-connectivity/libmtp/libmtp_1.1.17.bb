@@ -15,7 +15,7 @@ LIC_FILES_CHKSUM = "\
 
 BBCLASSEXTEND = "native"
 
-DEPENDS = "libusb1 gettext-native"
+DEPENDS = "libusb1 gettext-native virtual/libiconv"
 DEPENDS_append_class-target = " ${BPN}-native"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${BPN}/${BPN}-${PV}.tar.gz"
