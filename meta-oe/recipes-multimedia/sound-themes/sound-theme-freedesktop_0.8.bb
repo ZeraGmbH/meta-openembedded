@@ -5,6 +5,8 @@ LIC_FILES_CHKSUM = "file://CREDITS;md5=3213e601ce34bb42ddc3498903ac4e69"
 
 inherit autotools gettext
 
+DEPENDS += "glib-2.0-native"
+
 # with allarch.bbclass configure fails fo no compiler found
 PACKAGE_ARCH = "all"
 
