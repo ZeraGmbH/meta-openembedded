@@ -17,11 +17,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 #
 MACHINE_EXTRA_RRECOMMENDS ?= ""
 
-#
-# Select between dropbear and openssh
-# Set TASK_BASIC_SSHDAEMON = "openssh-sshd openssh-sftp openssh-sftp-server" in your DISTRO config to get openssh(d)
-#
-TASK_BASIC_SSHDAEMON ?= "dropbear openssh-sftp openssh-sftp-server"
+TASK_BASIC_SSHDAEMON ?= "openssh-sshd openssh-sshd-systemd openssh-sftp openssh-sftp-server"
 
 RPROVIDES_${PN} += "task-basic"
 RREPLACES_${PN} += "task-basic"
