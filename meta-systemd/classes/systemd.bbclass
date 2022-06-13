@@ -44,20 +44,6 @@ def systemd_after_parse(d):
         systemd_pkgs = d.getVar('SYSTEMD_PACKAGES', 1) or ""
         if systemd_pkgs == "":
             raise bb.build.FuncFailed, "\n\n%s inherits systemd but doesn't set SYSTEMD_PACKAGES" % bb_filename
-        for pkg_systemd in systemd_pkgs.split():
-            if pkg_systemd.find("-systemd") == -1:
-                if pkg_systemd != d.getVar('PN', 1):
-                    raise bb.build.FuncFailed, \
-                        "\n\n%s: %s in SYSTEMD_PACKAGES does not match <existing-package>-systemd or ${PN}" % \
-                        (bb_filename, pkg_systemd)
-            else:
-                pkg_systemd_base = pkg_systemd
-                if pkg_systemd_base.endswith('-systemd'):
-                    pkg_systemd_base = pkg_systemd[:-8]
-                if pkg_systemd_base not in packages:
-                    raise bb.build.FuncFailed, \
-                        "\n\n%s: %s in SYSTEMD_PACKAGES does not match <existing-package>-systemd or ${PN}" % \
-                        ( bb_filename, pkg_systemd)
 
     # prepend systemd-packages not already included
     def systemd_create_package(pkg_systemd):
