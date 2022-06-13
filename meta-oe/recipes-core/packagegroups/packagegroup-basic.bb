@@ -17,7 +17,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 #
 MACHINE_EXTRA_RRECOMMENDS ?= ""
 
-TASK_BASIC_SSHDAEMON ?= "openssh-sshd openssh-sshd-systemd openssh-sftp openssh-sftp-server"
+TASK_BASIC_SSHDAEMON ?= "openssh-sshd openssh-sftp openssh-sftp-server"
 
 RPROVIDES_${PN} += "task-basic"
 RREPLACES_${PN} += "task-basic"
