@@ -6,7 +6,7 @@ DEPENDS = "exo exo-native garcon gtk+ libxfce4util libxfce4ui xfconf dbus-glib l
 
 inherit xfce
 
-SRC_URI = " git://gitorious.org/xfce/xfce4-settings.git;protocol=git;branch=for-oe \
+SRC_URI = " git://github.com/schnitzeltony/xfce4-settings.git;protocol=git;branch=for-oe \
             file://0001-xsettings.xml-remove-trouble-causing-comment.patch \
             file://0002-xsettings.xml-Set-default-themes.patch \
             file://touchscreen/invisible \
